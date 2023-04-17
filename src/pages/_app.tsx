@@ -1,8 +1,8 @@
-import "@components/styles/globals.css";
-import type { AppProps } from "next/app";
-import Head from "next/head";
+import Head from 'next/head'
+import '../styles/globals.css'
+import { AppProps } from 'next/app'
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
@@ -29,8 +29,10 @@ export default function App({ Component, pageProps }: AppProps) {
           type="image/png"
           sizes="32x32"
         />
+        <link rel="apple-touch-icon" href="/apple-icon.png"></link>
+        <meta name="theme-color" content="#317EFB" />
       </Head>
       <Component {...pageProps} />
     </>
-  );
+  )
 }
