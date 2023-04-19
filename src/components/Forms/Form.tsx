@@ -3,18 +3,31 @@ import { signIn } from "next-auth/react";
 
 export default function Form() {
   const [isPasswordHidden, setPasswordHidden] = useState(true);
+  const [passid, setPassid] = useState("");
+  const [passcode, setPasscode] = useState("");
 
   const handleSignIn = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
+    console.log(passid, passcode);
     return signIn("credentials", {
-      password: "pw",
+      redirect: false,
+      passid: passid,
+      passcode: passcode,
     });
   };
 
   return (
     <div className="flex h-screen items-center justify-center flex-col">
       <div>
+        <div className="relative w-full mt-2">
+          <input
+            type="text"
+            placeholder="Pass ID"
+            className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            onChange={(e) => setPassid(e.target.value)}
+          />
+        </div>
         <div className="relative w-full mt-2">
           <button
             className="text-gray-400 absolute right-3 inset-y-0 my-auto active:text-gray-600"
@@ -61,6 +74,7 @@ export default function Form() {
             type={isPasswordHidden ? "password" : "text"}
             placeholder="User password"
             className="w-full pr-12 pl-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
+            onChange={(e) => setPasscode(e.target.value)}
           />
         </div>
         <button

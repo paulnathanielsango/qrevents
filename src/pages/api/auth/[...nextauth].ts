@@ -1,32 +1,48 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import clientPromise from "@util/mongodb";
+import { v4 as uuidv4 } from "uuid";
+import bcrypt from "bcrypt";
+import { User } from "@components/util/types";
 
 export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
       credentials: {
-        password: { label: "Password", type: "password" },
+        passid: { label: "Password", type: "password" },
+        passcode: { label: "Password", type: "password" },
       },
       async authorize(credentials: any) {
         const client = await clientPromise;
         const db = client.db("admin");
-        const users = db.collection("users");
+        const access = db.collection("users");
 
-        const validateUser = await users.findOne({
-          username: "ps",
+        // const hashed = await bcrypt.hash("test", 10);
+        // console.log("hashed", hashed);
+
+        const validatePass = await access.findOne<User>({
+          passid: credentials.passid,
         });
 
-        console.log(validateUser);
+        if (!validatePass) {
+          client.close();
+          throw new Error("Could not find id!");
+        }
+
+        const validatePasscode = await bcrypt.compare(
+          credentials.passcode,
+          validatePass.passcode
+        );
+
+        if (!validatePasscode) {
+          client.close();
+          throw new Error("Could not log you in!");
+        }
 
         return {
-          id: "17",
-          image:
-            "https://lh3.googleusercontent.com/a/AGNmyxZH6ZNTzDTzco55RW5HO-68wyxgpVRh9LbupYE7=s96-c",
-          emailVerified: null,
-          name: "PN CS",
-          email: "zly@vs.com",
+          id: validatePass.id,
+          name: validatePass.passId,
         };
       },
     }),
@@ -35,31 +51,21 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
-  callbacks: {
-    async signIn({ user }) {
-      const isAllowedToSignIn = true;
-
-      if (isAllowedToSignIn) {
-        return true;
-      } else {
-        // Return false to display a default error message
-        return false;
-        // Or you can return a URL to redirect to:
-        // return '/unauthorized'
-      }
-    },
-    async jwt({ token, user, account, profile, isNewUser }) {
-      token.role = "internal";
-      token.iat = Math.floor(Date.now() / 1000);
-      token.exp = Math.floor(Date.now() / 1000) + 60 * 60;
-      return token;
-    },
-    async session({ session, token, user }) {
-      if (user) {
-        session.user = user;
-      }
-      return session;
-    },
-  },
 };
 export default NextAuth(authOptions);
+
+// import { Collection, MongoClient } from "mongodb";
+// import { User } from "./types";
+// let usersCollection: Collection<User>;
+// import * as bcrypt from "bcrypt";
+
+// export async function findUserByPassId(passid: string) {
+//   return await usersCollection.findOne<User>({ passid });
+// }
+
+// export async function validatePassword(
+//   reqPassword: string,
+//   hashedPassword: string
+// ) {
+//   return await bcrypt.compare(reqPassword, hashedPassword);
+// }
