@@ -3,10 +3,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import clientPromise from "@util/mongodb";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
-import { User } from "@components/util/types";
+import { User } from "@util/types";
 
 export const authOptions: NextAuthOptions = {
-  // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
       credentials: {
@@ -26,7 +25,6 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!validatePass) {
-          client.close();
           throw new Error("Could not find id!");
         }
 
@@ -36,7 +34,6 @@ export const authOptions: NextAuthOptions = {
         );
 
         if (!validatePasscode) {
-          client.close();
           throw new Error("Could not log you in!");
         }
 
@@ -53,19 +50,3 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 export default NextAuth(authOptions);
-
-// import { Collection, MongoClient } from "mongodb";
-// import { User } from "./types";
-// let usersCollection: Collection<User>;
-// import * as bcrypt from "bcrypt";
-
-// export async function findUserByPassId(passid: string) {
-//   return await usersCollection.findOne<User>({ passid });
-// }
-
-// export async function validatePassword(
-//   reqPassword: string,
-//   hashedPassword: string
-// ) {
-//   return await bcrypt.compare(reqPassword, hashedPassword);
-// }

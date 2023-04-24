@@ -1,15 +1,15 @@
-import Layout from "@components/components/Layout";
-import Form from "@components/components/Forms/Form";
-import Admin from "@components/components/Dashboard/Admin";
 import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import Layout from "@components/Layout";
+import Records from "@components/Dashboard/Records";
+import Form from "@components/Forms/Form";
+import Header from "@components/Header";
 
 export default function Home() {
   const { data: session } = useSession();
 
   return (
     <>
-      <Layout>{session ? <Admin /> : <Form />}</Layout>
+      <Layout>{session ? <Header tabNum={1} /> : <Form />}</Layout>
     </>
   );
 }
