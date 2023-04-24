@@ -1,10 +1,11 @@
 import { Tab } from "@headlessui/react";
+import Qrgenerator from "../pages/qrgenerator";
 
 const Section = () => {
   return (
     <>
       <Tab.Panel>
-        <section id="Records">
+        {/* <section id="Records">
           <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
             <div className="p-3">
               <div className="overflow-x-auto">
@@ -181,10 +182,12 @@ const Section = () => {
               </div>
             </div>
           </div>
-        </section>{" "}
+        </section> */}
       </Tab.Panel>
       <Tab.Panel>Content 2</Tab.Panel>
-      <Tab.Panel>Content 3</Tab.Panel>
+      <Tab.Panel>
+        <Qrgenerator />
+      </Tab.Panel>
       <Tab.Panel>Content 4</Tab.Panel>
     </>
   );
