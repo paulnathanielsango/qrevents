@@ -6,7 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const qrValue = "paolosango";
+  const qrValue = "pncs";
   const hashed = await bcrypt.hash(qrValue, 10);
   res.send({
     qrvalue: hashed,
