@@ -7,9 +7,5 @@ import Header from "@components/Header";
 export default function Home() {
   const { data: session } = useSession();
 
-  return (
-    <>
-      <Layout>{session ? <Header tabNum={1} /> : <Form />}</Layout>
-    </>
-  );
+  return <Layout>{session ? <Header tabNum={1} /> : <Form />}</Layout>;
 }
